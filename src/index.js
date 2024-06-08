@@ -25,10 +25,20 @@ app.set('view engine', 'ejs');
 
 app.get('/subjects', async (req, res) => {
   const { major } = req.query;
+  let orCondition;
+
+  if (major === 'nothing') {
+    return res.json([]); // Return an empty array for "nothing" major
+  } else if (major === 'IT') {
+    orCondition = `major.eq.${major},major.eq.common`;
+  } else {
+    orCondition = `major.eq.${major},major.eq.common,major.eq.commoncscoe`;
+  }
   const { data: subjects, error } = await supabase
     .from('doctors')
     .select('*')
-    .eq('major', major);
+    .or(orCondition);
+
 
   if (error) return res.status(500).json({ error: error.message });
 

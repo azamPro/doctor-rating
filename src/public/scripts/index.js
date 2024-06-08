@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const subjectsDiv = document.getElementById('subjects');
     subjectsDiv.innerHTML = subjects.map(subject => `
       <div class="card p-4 mb-4 bg-white shadow cursor-pointer" onclick="rateDoctor('${subject.subject_code}')" style="direction: rtl;">
-        <h2 class="text-xl">${subject.subject_name} (${subject.subject_code})</h2>
+        <h1 class="text-xl font-bold">${subject.subject_code}</h1>
+        <h2 class="text-xl">${subject.subject_name} </h2>
         <p class="font-bold mt-3" >اسم الدكتور : ${subject.doctor_name}</p>
       </div>
     `).join('');
