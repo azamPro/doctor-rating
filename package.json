@@ -1,0 +1,25 @@
+{
+  "name": "doctor-rating",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npx tailwindcss -i ./src/public/styles/tailwind.css -o ./src/public/styles/output.css --watch\" \"nodemon src/index.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
+    "body-parser": "^1.20.2",
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "supabase": "^1.172.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  }
+}
