@@ -34,11 +34,17 @@ app.get('/subjects', async (req, res) => {
   } else {
     orCondition = `major.eq.${major},major.eq.common,major.eq.commoncscoe`;
   }
-  const { data: subjects, error } = await supabase
+
+  let query = supabase
     .from('doctors')
-    .select('*')
+    .select('subject_code, subject_name, major, subject_assignments(doctor_name, gender)')
     .or(orCondition);
 
+  if (major === 'COE') {
+    query = query.filter('subject_assignments.gender', 'eq', 'boys');
+  }
+
+  const { data: subjects, error } = await query;
 
   if (error) return res.status(500).json({ error: error.message });
 
@@ -46,49 +52,82 @@ app.get('/subjects', async (req, res) => {
 });
 
 
+app.get('/subject-gender', async (req, res) => {
+  const { subject_code } = req.query;
+
+  try {
+    const { data: assignments, error } = await supabase
+      .from('subject_assignments')
+      .select('gender')
+      .eq('subject_code', subject_code);
+
+    if (error) {
+      console.error('Error fetching gender:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    if (assignments.length === 0) {
+      return res.status(404).json({ error: 'No assignments found for this subject code' });
+    }
+
+    // Assuming the gender is consistent for a subject code, we take the first result
+    const gender = assignments[0].gender;
+    console.log('Fetched gender:', gender); // Log the fetched gender
+    res.json({ gender });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
 app.post('/rate', async (req, res) => {
-    const { student_name, student_number, subject_code, comment, rating } = req.body;
-  
-    // Validate student number
-    if (!/^\d{9}$/.test(student_number)) {
-      return res.status(400).json({ error: 'Student number must be 9 digits.' });
-    }
-  
-    // Check if the student has already rated this subject
-    const { data: existingRating, error: existingError } = await supabase
-      .from('ratings')
-      .select('*')
-      .eq('student_number', student_number)
-      .eq('subject_code', subject_code)
-      .single();
-  
-    if (existingRating) {
-      return res.status(400).json({ error: 'You have already rated this subject.' });
-    }
-  
-    if (existingError && existingError.code !== 'PGRST116') {
-      return res.status(500).json({ error: existingError.message });
-    }
-  
-    // Ensure student exists in students table
-    const defaultMajor = 'Unknown'; // Set a default value for major  
-    const { data: studentData, error: studentError } = await supabase
-      .from('students')
-      .upsert({ student_number, student_name ,major: defaultMajor}, { onConflict: ['student_number'] });
-  
-    if (studentError) {
-      return res.status(500).json({ error: studentError.message });
-    }
-  
-    // Insert the rating into the ratings table
-    const { data, error } = await supabase
-      .from('ratings')
-      .insert({ student_number, subject_code, comment, rating });
-  
-    if (error) return res.status(500).json({ error: error.message });
-  
-    res.json({ message: 'Rating submitted successfully!' });
-  });
+  const { student_name, student_number, subject_code, comment, rating, gender } = req.body;
+
+  // Validate student number
+  if (!/^\d{9}$/.test(student_number)) {
+    return res.status(400).json({ error: 'Student number must be 9 digits.' });
+  }
+
+  // Check if the student has already rated this subject
+  const { data: existingRating, error: existingError } = await supabase
+    .from('ratings')
+    .select('*')
+    .eq('student_number', student_number)
+    .eq('subject_code', subject_code)
+    .single();
+
+  if (existingRating) {
+    return res.status(400).json({ error: 'You have already rated this subject.' });
+  }
+
+  if (existingError && existingError.code !== 'PGRST116') {
+    return res.status(500).json({ error: existingError.message });
+  }
+
+  // Ensure student exists in students table
+  const defaultMajor = 'Unknown'; // Set a default value for major  
+  const { data: studentData, error: studentError } = await supabase
+    .from('students')
+    .upsert({ student_number, student_name, major: defaultMajor }, { onConflict: ['student_number'] });
+
+  if (studentError) {
+    return res.status(500).json({ error: studentError.message });
+  }
+
+  // Insert the rating into the ratings table
+  const { data, error } = await supabase
+    .from('ratings')
+    .insert({ student_number, subject_code, comment, rating, gender });
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.json({ message: 'Rating submitted successfully!' });
+});
+
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });

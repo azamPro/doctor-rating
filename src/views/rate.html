@@ -18,6 +18,7 @@
   </style>
 </head>
 <body class="bg-gray-100">
+  <!-- navgation bar -->
   <nav class="bg-blue-500 p-4 text-white">
     <div class="container mx-auto flex justify-between">
       <a href="/" class="text-lg font-bold">Home</a>
@@ -28,10 +29,17 @@
       </div>
     </div>
   </nav>
+  <!-- end navgatio -->
   <div class="container mx-auto p-4 content">
-    <h1 class="text-2xl font-bold">Rate Doctor</h1>
+    <div style="direction: rtl;">
+
+      <h1 class="text-2xl font-bold" id="subject_name"></h1>
+      <h2 class="text-xl" id="subject_code"></h2>
+    </div>
+
     <form id="rateForm" class="mt-4">
-      <input type="hidden" id="subject_code" name="subject_code">
+      <input type="hidden" id="subject_code_input" name="subject_code">
+      <input type="hidden" id="gender" name="gender"> <!-- Hidden input for gender -->
       <div class="mb-4">
         <label for="student_name" class="block text-sm font-medium">Name</label>
         <input type="text" id="student_name" name="student_name" class="mt-1 p-2 border w-full" required>
