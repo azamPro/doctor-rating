@@ -8,7 +8,8 @@ import bodyParser from 'body-parser';
 dotenv.config();
 
 const app = express();
-const port = 5000;
+const PORT = process.env.PORT || 8000;
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -136,6 +137,6 @@ app.get('/rate', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'rate.html'));
   });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

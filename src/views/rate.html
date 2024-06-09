@@ -37,32 +37,32 @@
       <h2 class="text-xl" id="subject_code"></h2>
     </div>
 
-    <form id="rateForm" class="mt-4">
+    <form id="rateForm" class="mt-4" style="direction: rtl;">
       <input type="hidden" id="subject_code_input" name="subject_code">
       <input type="hidden" id="gender" name="gender"> <!-- Hidden input for gender -->
       <div class="mb-4">
-        <label for="student_name" class="block text-sm font-medium">Name</label>
-        <input type="text" id="student_name" name="student_name" class="mt-1 p-2 border w-full" required>
+        <label for="student_name" class="block text-sm font-medium">الاسم:</label>
+        <input type="text" id="student_name" name="student_name" placeholder="مثلا: فلان الفلاني..." class="mt-1 p-2 border w-full" required>
       </div>
       <div class="mb-4">
-        <label for="student_number" class="block text-sm font-medium">Student Number</label>
-        <input type="text" id="student_number" name="student_number" class="mt-1 p-2 border w-full" required pattern="\d{9}" title="ادخل رقم الطالب بشكل صحيح" >
+        <label for="student_number" class="block text-sm font-medium">رقم الطالب الجامعي:</label>
+        <input type="text" id="student_number" name="student_number" placeholder=" مثلا: 123456789" class="mt-1 p-2 border w-full" required pattern="\d{9}" title="ادخل رقم الطالب بشكل صحيح" >
       </div>
       <div class="mb-4">
-        <label for="comment" class="block text-sm font-medium">Comment</label>
-        <textarea id="comment" name="comment" class="mt-1 p-2 border w-full" required></textarea>
+        <label for="comment" class="block text-sm font-medium" >تعليقك:</label>
+        <textarea id="comment"  name="comment" class="mt-1 p-2 border w-full h-44"  placeholder="مثلا:دكتور جيد ومتعاون..." required></textarea>
       </div>
-      <div class="mb-4">
-        <label for="rating" class="block text-sm font-medium">Rating</label>
+      <div class="mb-12">
+        <label for="rating" class="block text-sm font-medium">التقييم:</label>
         <select id="rating" name="rating" class="mt-1 p-2 border w-full" required>
-          <option value="" disabled selected>Rate from 5</option>
+          <option value="" disabled selected>قيم من 5</option>
           <option value="1">1 - سيئ</option>
           <option value="2">2 - عادي</option>
           <option value="3">3 - كويس</option>
           <option value="4">4 - ممتاز</option>
           <option value="5">5 - اسطورري</option>
         </select>
-        <p class="text-red-700 text-sm">تقييم 5 هو الافضل و 1 هو الاسوء</p>
+        <p class="text-red-700 text-sm mt-2">تقييم 5 هو الافضل و 1 هو الاسوء</p>
       </div>
       <button type="submit" class="bg-blue-500 text-white px-4 py-2">Submit</button>
     </form>

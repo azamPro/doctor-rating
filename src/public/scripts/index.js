@@ -30,6 +30,7 @@ async function showSubjects(major) {
         const bgColor = assignment.gender === 'girls' ? 'bg-pink-200' : 'bg-white';
         return `
           <div class="card p-4 mb-4 ${bgColor} shadow cursor-pointer" onclick="rateDoctor('${subject.subject_code}', '${assignment.gender}', '${subject.subject_name}')" style="direction: rtl;">
+            <p class="text-xs">${ assignment.gender === 'girls' ? 'طالبات' : 'طلاب'}</p>
             <h1 class="text-xl font-bold">${subject.subject_code}</h1>
             <h2 class="text-xl">${subject.subject_name}</h2>
             <p class="font-bold">اسم الدكتور : ${assignment.doctor_name}</p>
