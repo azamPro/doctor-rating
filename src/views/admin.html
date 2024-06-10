@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/styles/output.css" rel="stylesheet">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .content {
+      flex: 1;
+      
+    }
+    .subject {
+        transition: background-color 0.3s ease;
+      }
+     
+  </style>
+</head>
+<body class="bg-gray-100">
+    <!-- navegation -->
+  <nav class="bg-black p-4 text-white">
+    <div class="container mx-auto flex justify-between">
+      <a href="/" class="text-lg font-bold">Home</a>
+    </div>
+  </nav>
+  <!-- main content -->
+  <div class="container mx-auto p-4 content">
+    <h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+    <div id="stats">
+      <p>Loading stats...</p>
+    </div>
+  </div>
+  <!-- Footer -->
+ <footer class="bg-black text-white py-4">
+    <div class="container mx-auto text-center">
+      <p class="mb-4 mx-2.5 font-bold text-xl">Hello, I am Ace, a web developer. Say hello to me!</p>
+    </div>
+ 
+  <script src="/scripts/admin.js"></script>
+</body>
+</html>

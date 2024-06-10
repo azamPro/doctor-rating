@@ -24,6 +24,118 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
+// Route for the admin page
+app.get('/admin54705', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+});
+
+// API endpoint to fetch the count of students, ratings, and subjects
+app.get('/admin/stats', async (req, res) => {
+  try {
+    const { data: students, error: studentsError } = await supabase
+      .from('students')
+      .select('student_number, student_name', { count: 'exact' });
+
+    const { data: ratings, error: ratingsError } = await supabase
+      .from('ratings')
+      .select('id', { count: 'exact' });
+
+    const { data: subjectsData, error: subjectsError } = await supabase
+      .from('doctors')
+      .select('subject_code', { count: 'exact' });
+
+    if (studentsError || ratingsError || subjectsError) {
+      return res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+
+    // Get the detailed stats for each subject
+    const { data: detailedSubjects, error: detailedSubjectsError } = await supabase
+      .from('doctors')
+      .select('subject_code, subject_name, subject_assignments(doctor_name, gender), ratings(*)');
+
+    if (detailedSubjectsError) {
+      return res.status(500).json({ error: 'Failed to fetch detailed subject stats' });
+    }
+
+    const subjects  = detailedSubjects.map(subject => {
+      const totalRatings = subject.ratings.length;
+      const girlsRatings = subject.ratings.filter(rating => rating.gender === 'girls').length;
+      const boysRatings = subject.ratings.filter(rating => rating.gender === 'boys').length;
+      return {
+        subject_code: subject.subject_code,
+        subject_name: subject.subject_name,
+        total_ratings: totalRatings,
+        girls_ratings: girlsRatings,
+        boys_ratings: boysRatings
+      };
+    });
+    // Sort subjects by total ratings in descending order
+    subjects.sort((a, b) => b.total_ratings - a.total_ratings);
+
+    res.json({
+      studentCount: students.length,
+      ratingCount: ratings.length,
+      subjectCount: subjectsData.length,
+      students,
+      subjects
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// API endpoint to fetch student details by student number
+app.get('/admin/student/:studentNumber', async (req, res) => {
+  const { studentNumber } = req.params;
+
+  try {
+    const { data: student, error } = await supabase
+      .from('students')
+      .select('*')
+      .eq('student_number', studentNumber)
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    res.json(student);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// API endpoint to fetch ratings by subject code
+app.get('/admin/ratings/:subjectCode', async (req, res) => {
+  const { subjectCode } = req.params;
+
+  try {
+    const { data: ratings, error } = await supabase
+      .from('ratings')
+      .select(`
+        *,
+        students (
+          student_name
+        )
+      `)
+      .eq('subject_code', subjectCode);
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    // Adjusting the structure of the response to include student_name directly
+    const formattedRatings = ratings.map(rating => ({
+      ...rating,
+      student_name: rating.students.student_name
+    }));
+
+    res.json(formattedRatings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
 app.get('/subjects', async (req, res) => {
   const { major } = req.query;
   let orCondition;
@@ -52,7 +164,6 @@ app.get('/subjects', async (req, res) => {
   res.json(subjects);
 });
 
-
 app.get('/subject-gender', async (req, res) => {
   const { subject_code } = req.query;
 
@@ -80,9 +191,6 @@ app.get('/subject-gender', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
-
 
 app.post('/rate', async (req, res) => {
   const { student_name, student_number, subject_code, comment, rating, gender } = req.body;
@@ -127,7 +235,6 @@ app.post('/rate', async (req, res) => {
 
   res.json({ message: 'Rating submitted successfully!' });
 });
-
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
