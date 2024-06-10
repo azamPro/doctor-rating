@@ -12,23 +12,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('rateForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true; // Disable the submit button
+
     const formData = new FormData(this);
     console.log('Form Data:', Object.fromEntries(formData)); // Log form data
 
-    const response = await fetch('/rate', {
-      method: 'POST',
-      body: JSON.stringify(Object.fromEntries(formData)),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    try {
+      const response = await fetch('/rate', {
+        method: 'POST',
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-    const result = await response.json();
-    if (result.error) {
-      alert('Error: ' + result.error);
-    } else {
-      alert('Rating submitted successfully!');
-      this.reset();
+      const result = await response.json();
+      if (result.error) {
+        alert('Error: ' + result.error);
+        submitButton.disabled = false; // Re-enable the submit button if there's an error
+      } else {
+        alert('Rating submitted successfully!');
+        this.reset();
+
+        // Redirect to the main page with the same major after 3 seconds
+        setTimeout(() => {
+          window.location.href = `/`;
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+      submitButton.disabled = false; // Re-enable the submit button if there's an error
     }
   });
 });
