@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="/styles/output.css" rel="stylesheet">
+  <link href="/styles/animation.css" rel="stylesheet">
   <title>Rate Doctor</title>
   <style>
     body {
@@ -15,17 +16,18 @@
     .content {
       flex: 1;
     }
+    
   </style>
 </head>
 <body class="bg-gray-100">
   <!-- navgation bar -->
   <nav class="bg-blue-500 p-4 text-white">
     <div class="container mx-auto flex justify-between">
-      <a href="/" class="text-lg font-bold">Home</a>
+      <a href="/" class="text-lg font-bold">تقييم الدكاترة</a>
       <div class="space-x-4">
-        <a href="/" class="text-lg">CS</a>
-        <a href="/" class="text-lg">IT</a>
-        <a href="/" class="text-lg">COE</a>
+        <a href="/rating" class="text-lg">CS</a>
+        <a href="/rating" class="text-lg">IT</a>
+        <a href="/rating" class="text-lg">COE</a>
       </div>
     </div>
   </nav>
@@ -67,6 +69,10 @@
       <button type="submit" class="bg-blue-500 text-white px-4 py-2">Submit</button>
     </form>
   </div>
+  <!-- animation -->
+<div id="loading" class=" hidden">
+  <div class="spinner"></div>
+</div>
  <!-- Footer -->
  <footer class="bg-blue-500 text-white py-4">
   <div class="container mx-auto text-center">

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async function () {
-
     const majorSelect = document.getElementById('major');
     majorSelect.addEventListener('change', function() {
         const major = this.value;
@@ -20,7 +19,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     async function showSubjects(major) {
         try {
-    
+            // Show the loading spinner
+            document.getElementById('loading').classList.add('loading');
             // Fetching stats data based on major
             const responseStats = await fetch(`/admin/stats?major=${major}`);
             const stats = await responseStats.json();
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Fetching subjects data based on major
             const responseSubjects = await fetch(`/subjects?major=${major}`);
             const subjects = await responseSubjects.json();
-            let  ratingNumber;
+            //let  ratingNumber;
             const statsDiv = document.getElementById('stats');
     
             if (subjects.length === 0) {
@@ -59,22 +59,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                             .filter(stat => stat.subject_code === subject.subject_code && stat.gender === assignment.gender)
                             .reduce((acc, stat) => acc + stat.total_ratings, 0);
                         
+                            let ratingColor = 'bg-gray-200'; // Default background color
+
+                            if (ratingAverage > 3.5) {
+                                ratingColor = 'bg-green-500';
+                            } else if (ratingAverage >= 2 && ratingAverage <= 3.5) {
+                                ratingColor = 'bg-orange-500';
+                            } else if (ratingAverage < 2) {
+                                ratingColor = 'bg-red-500';
+                            }
+
                             return `
-                            <div class="subject p-6 ${bgColor} shadow rounded mb-4 cursor-pointer " data-subject-code="${subject.subject_code}" gender="${assignment.gender}">
-                                <div class="sub flex items-center">
-                                <div class="contentInSub ml-6 flex-grow">
-                                    <h3 class="text-xl font-bold">${subject.subject_name} (${subject.subject_code})</h3>
-                                    <p>اسم الدكتور : ${assignment.doctor_name}</p>
-                                    <p class="mt-2 text-red-800 font-bold">عدد المقيميين: ${ratingNumber}</p>
-                                    
-                                </div>
-                                <div class="flex-shrink-0 bg-blue-500 text-white text-3xl font-bold p-3 rounded-l-md ">
-                                    ${ratingAverage}/5
-                                    </div>
+                                <div class="subject p-6 ${bgColor} shadow rounded mb-4 cursor-pointer " data-subject-code="${subject.subject_code}" gender="${assignment.gender}">
+                                    <div class="sub flex items-center">
+                                        <div class="contentInSub ml-6 flex-grow">
+                                            <h3 class="text-xl font-bold">${subject.subject_name} (${subject.subject_code})</h3>
+                                            <p>اسم الدكتور : ${assignment.doctor_name}</p>
+                                            <p class="mt-2 text-red-800 font-bold">عدد المقيميين: ${ratingNumber}</p>
+                                        </div>
+                                        <div class="flex-shrink-0 ${ratingColor} text-white text-3xl font-bold p-3 rounded-l-md">
+                                            ${ratingAverage}/5
+                                        </div>
                                     </div>
                                     <div class="ratings hidden mt-4"></div>
-                            </div>
-                        `;
+                                </div>
+                            `;
                         
                     }).join('');
                 }).join('');
@@ -107,9 +116,15 @@ document.addEventListener('DOMContentLoaded', async function () {
             });
 
             }
+        // Hide the loading spinner after data is fetched
+        document.getElementById('loading').classList.remove('loading');
+        document.getElementById('notic').textContent  = 'اضغط على المادة التي تريد قراءة تعليقات الطلاب عنها';
         } catch (error) {
             console.error('Error fetching stats or subjects:', error);
             document.getElementById('stats').innerHTML = '<p>Error loading data. Please try again later.</p>';
+            document.getElementById('loading').classList.remove('loading');
+
+
         }
     }
       

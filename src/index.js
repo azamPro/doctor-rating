@@ -272,7 +272,7 @@ app.get('/rate', (req, res) => {
   });
 
 app.get('/rating', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+  res.sendFile(path.join(__dirname, 'views', 'subjects.html'));
 });
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'home.html'));

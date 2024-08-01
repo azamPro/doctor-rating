@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function showSubjects(major) {
+    // Show the loading spinner
+    document.getElementById('loading').classList.add('loading');
+
   const response = await fetch(`/subjects?major=${major}`);
   const subjects = await response.json();
   const subjectsDiv = document.getElementById('subjects');
@@ -39,6 +42,9 @@ async function showSubjects(major) {
       }).join('');
     }).join('');
   }
+  // hide the loading spinner
+  document.getElementById('loading').classList.remove('loading');
+
 }
 
 function rateDoctor(subject_code, gender, subject_name) {

@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('rateForm').addEventListener('submit', async function (e) {
     e.preventDefault();
+    // show the loading spinner
+    document.getElementById('loading').classList.add('loading');
 
     const submitButton = this.querySelector('button[type="submit"]');
     submitButton.disabled = true; // Disable the submit button
@@ -33,6 +35,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         submitButton.disabled = false; // Re-enable the submit button if there's an error
       } else {
         alert('Rating submitted successfully!');
+        // hide the loading spinner
+        document.getElementById('loading').classList.remove('loading');
+
         this.reset();
 
         // Redirect to the main page with the same major after 3 seconds
@@ -44,6 +49,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Error:', error);
       alert('An error occurred. Please try again.');
       submitButton.disabled = false; // Re-enable the submit button if there's an error
+      // hide the loading spinner
+      document.getElementById('loading').classList.remove('loading');
+
     }
   });
 });

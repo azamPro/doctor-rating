@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="/styles/output.css" rel="stylesheet">
+  <link href="/styles/animation.css" rel="stylesheet">
+  
   <title>رأي الطلاب</title>
   <style>
     body {
@@ -14,6 +16,8 @@
     .content {
       flex: 1;
     }
+    
+    
   </style>
 </head>
 <body class="bg-gray-100">
@@ -30,7 +34,7 @@
   <div class="container mx-auto p-4 content">
     <div class="title flex items-center justify-center flex-col gap-4">
       <h1 class="text-2xl text-center font-bold mt-4">اختر تخصصك لعرض تعليقات الطلاب وتقييمهم عن المواد</h1>
-      
+      <p id="notic" class="text-red-800" ></p>
       <select id="major" class="mt-4 p-2 border">
         <option value="nothing" disabled selected>Select your major</option>
         <option value="CS">Computer Science</option>
@@ -42,10 +46,16 @@
     <div class="container mx-auto p-4 content" style="direction: rtl;">
         <div id="stats" >
           <p class="text-center mt-4">لم تختر تخصص حتى تستطيع قراءة التقييمات</p>
+          <div id="stats"></div>
+          
         </div>
       </div>
-  </div>
-
+    </div>
+    
+    <!-- animation -->
+<div id="loading" class=" hidden">
+  <div class="spinner"></div>
+</div>
  <!-- Footer -->
  <footer class="bg-green-600 text-white py-4">
   <div class="container mx-auto text-center">
