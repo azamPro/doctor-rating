@@ -127,7 +127,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <div class="p-4 bg-gray-100 shadow rounded mb-4">
                         <p><strong>المقيم:</strong> مجهول</p>
                         <p><strong>التعليق:</strong> ${rating.comment}</p>
-                        <p><strong>التعليق:</strong> ${rating.gender}</p>
                         <p><strong>التقييم:</strong> ${rating.rating}</p>
                     </div>
                 `).join('');
