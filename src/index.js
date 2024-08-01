@@ -163,7 +163,7 @@ app.get('/admin/ratings/:subjectCode', async (req, res) => {
 
 
 app.get('/result', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'result.html'));
+  res.sendFile(path.join(__dirname, 'views', 'Result.html'));
 })
 
 
