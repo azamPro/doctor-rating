@@ -2,4 +2,4 @@ node_modules/
 .env
 .deployment
 .vscode/
-.github/
+.github/workflows/
