@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/styles/output.css" rel="stylesheet">
+  <title>Home</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .content {
+      flex: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-black p-4 text-white">
+        <div class="container mx-auto flex justify-between items-center">
+          <a href="/" class="text-lg font-bold">Home</a>
+          <div class="flex space-x-4 px-4">
+            <a href="/rating" class="text-lg">تقييم الدكاترة</a>
+            <a href="/result" class="text-lg">التقييمات</a>
+          </div>
+        </div>
+      </nav>
+      
+      <div class="container mx-auto p-4 content flex items-center justify-center min-h-screen ">
+        <div class="title flex items-center justify-center flex-col gap-4">
+          <h1 class="text-4xl font-bold mb-12" >اختر ما تريد</h1>
+          <div class="flex sm:flex-row gap-4 ">
+            <a href="/rating" class="bg-blue-500 text-white px-16 py-2 rounded text-lg text-center">تقييم الدكاترة</a>
+            <a href="/result" class="bg-green-500 text-white px-6 py-2 rounded text-lg text-center">تصفح المواد والتقييمات</a>
+          </div>
+        </div>
+      </div>
+      
+      
+    
+
+ <!-- Footer -->
+ <footer class="bg-blue-500 text-white py-4">
+  <div class="container mx-auto text-center">
+    <p class="mb-4 mx-2.5 font-bold text-xl">Hello, I am Ace, a web developer. Say hello to me!</p>
+  </div>
+</footer>
+
+<script src="/scripts/index.js"></script>
+</body>
+</html>

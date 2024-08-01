@@ -39,7 +39,7 @@ app.get('/admin/stats', async (req, res) => {
 
     const { data: ratings, error: ratingsError } = await supabase
       .from('ratings')
-      .select('id', { count: 'exact' });
+      .select('id, gender', { count: 'exact' }); // Ensure gender is selected
 
     const { data: subjectsData, error: subjectsError } = await supabase
       .from('doctors')
@@ -58,18 +58,37 @@ app.get('/admin/stats', async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch detailed subject stats' });
     }
 
-    const subjects  = detailedSubjects.map(subject => {
+    const subjects = detailedSubjects.map(subject => {
+      // Filter ratings by gender and calculate total ratings for each
+      const girlsRatings = subject.ratings.filter(rating => rating.gender === 'girls');
+      const boysRatings = subject.ratings.filter(rating => rating.gender === 'boys');
+    
+      // Calculate total and average ratings for girls
+      const totalGirlsRatings = girlsRatings.length;
+      const sumGirlsRatings = girlsRatings.reduce((acc, rating) => acc + rating.rating, 0);
+      const averageGirlsRating = totalGirlsRatings > 0 ? (sumGirlsRatings / totalGirlsRatings).toFixed(2) : null;
+    
+      // Calculate total and average ratings for boys
+      const totalBoysRatings = boysRatings.length;
+      const sumBoysRatings = boysRatings.reduce((acc, rating) => acc + rating.rating, 0);
+      const averageBoysRating = totalBoysRatings > 0 ? (sumBoysRatings / totalBoysRatings).toFixed(2) : null;
+    
+      // Calculate total ratings across all genders
       const totalRatings = subject.ratings.length;
-      const girlsRatings = subject.ratings.filter(rating => rating.gender === 'girls').length;
-      const boysRatings = subject.ratings.filter(rating => rating.gender === 'boys').length;
+      console.log(`Total ratings for girl:${averageGirlsRating} boys: ${averageBoysRating}`);
+
       return {
         subject_code: subject.subject_code,
         subject_name: subject.subject_name,
         total_ratings: totalRatings,
-        girls_ratings: girlsRatings,
-        boys_ratings: boysRatings
+        girls_ratings: totalGirlsRatings,
+        boys_ratings: totalBoysRatings,
+        average_girls_rating: averageGirlsRating,
+        average_boys_rating: averageBoysRating,
+        detailed_subjects: detailedSubjects
       };
     });
+
     // Sort subjects by total ratings in descending order
     subjects.sort((a, b) => b.total_ratings - a.total_ratings);
 
@@ -84,6 +103,7 @@ app.get('/admin/stats', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // API endpoint to fetch student details by student number
 app.get('/admin/student/:studentNumber', async (req, res) => {
@@ -107,9 +127,10 @@ app.get('/admin/student/:studentNumber', async (req, res) => {
 // API endpoint to fetch ratings by subject code
 app.get('/admin/ratings/:subjectCode', async (req, res) => {
   const { subjectCode } = req.params;
+  const { gender } = req.query; // Destructure gender from req.query
 
   try {
-    const { data: ratings, error } = await supabase
+    let ratingsQuery = supabase
       .from('ratings')
       .select(`
         *,
@@ -118,6 +139,13 @@ app.get('/admin/ratings/:subjectCode', async (req, res) => {
         )
       `)
       .eq('subject_code', subjectCode);
+
+    // If gender is provided, filter by gender
+    if (gender) {
+      ratingsQuery = ratingsQuery.eq('gender', gender);
+    }
+
+    const { data: ratings, error } = await ratingsQuery;
 
     if (error) return res.status(500).json({ error: error.message });
 
@@ -134,6 +162,9 @@ app.get('/admin/ratings/:subjectCode', async (req, res) => {
 });
 
 
+app.get('/result', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'result.html'));
+})
 
 
 app.get('/subjects', async (req, res) => {
@@ -184,7 +215,7 @@ app.get('/subject-gender', async (req, res) => {
 
     // Assuming the gender is consistent for a subject code, we take the first result
     const gender = assignments[0].gender;
-    console.log('Fetched gender:', gender); // Log the fetched gender
+    
     res.json({ gender });
   } catch (err) {
     console.error('Error:', err);
@@ -236,13 +267,17 @@ app.post('/rate', async (req, res) => {
   res.json({ message: 'Rating submitted successfully!' });
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
-
 app.get('/rate', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'rate.html'));
   });
+
+app.get('/rating', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'home.html'));
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
