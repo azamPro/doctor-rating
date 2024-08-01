@@ -75,7 +75,6 @@ app.get('/admin/stats', async (req, res) => {
     
       // Calculate total ratings across all genders
       const totalRatings = subject.ratings.length;
-      console.log(`Total ratings for girl:${averageGirlsRating} boys: ${averageBoysRating}`);
 
       return {
         subject_code: subject.subject_code,
@@ -84,8 +83,8 @@ app.get('/admin/stats', async (req, res) => {
         girls_ratings: totalGirlsRatings,
         boys_ratings: totalBoysRatings,
         average_girls_rating: averageGirlsRating,
-        average_boys_rating: averageBoysRating,
-        detailed_subjects: detailedSubjects
+        average_boys_rating: averageBoysRating
+        
       };
     });
 
